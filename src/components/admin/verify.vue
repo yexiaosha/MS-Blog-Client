@@ -59,7 +59,7 @@
           isAdmin: true
         };
 
-        this.$http.post(this.$constant.baseURL + "/user/login", user, true, false)
+        this.$http.post(this.$constant.baseURL + "/user/login", user, true, true)
           .then((res) => {
             if (!this.$common.isEmpty(res.data)) {
               localStorage.setItem("adminToken", res.data.accessToken);

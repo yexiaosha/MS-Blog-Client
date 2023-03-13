@@ -21,7 +21,7 @@
             <input v-model="email" type="email" placeholder="邮箱">
             <input v-model="code" type="text" placeholder="验证码" disabled>
             <a style="margin: 0" href="#" @click="changeDialog('邮箱验证码')">获取验证码</a>
-            <button @click="regist()">注册</button>
+            <button @click="registry()">注册</button>
           </div>
         </div>
         <div class="form-container sign-in-container">
@@ -257,11 +257,11 @@
           password: this.$common.encrypt(this.password.trim())
         };
 
-        this.$http.post(this.$constant.baseURL + "/user/login", user, false, false)
+        this.$http.post(this.$constant.baseURL + "/user/login", user, false, true)
           .then((res) => {
             if (!this.$common.isEmpty(res.data)) {
               this.$store.commit("loadCurrentUser", res.data);
-              localStorage.setItem("userToken", res.data.accessToken);
+              localStorage.setItem("userToken", res.data.token);
               this.account = "";
               this.password = "";
               this.$router.push({path: '/'});
@@ -272,9 +272,10 @@
               message: error.message,
               type: "error"
             });
+            console.log(error)
           });
       },
-      regist() {
+      registry() {
         if (this.$common.isEmpty(this.username) || this.$common.isEmpty(this.password)) {
           this.$message({
             message: "请输入用户名或密码！",
@@ -317,11 +318,11 @@
           user.email = this.email;
         }
 
-        this.$http.post(this.$constant.baseURL + "/user/regist", user)
+        this.$http.post(this.$constant.baseURL + "/user/register", user)
           .then((res) => {
             if (!this.$common.isEmpty(res.data)) {
               this.$store.commit("loadCurrentUser", res.data);
-              localStorage.setItem("userToken", res.data.accessToken);
+              localStorage.setItem("userToken", res.data.token);
               this.username = "";
               this.password = "";
               this.$router.push({path: '/'});
@@ -397,7 +398,7 @@
             });
             return false;
           }
-          params.place = this.phoneNumber;
+          params.phoneNumber = this.phoneNumber;
           return true;
         } else if (this.dialogTitle === "修改邮箱" || this.dialogTitle === "绑定邮箱" || this.dialogTitle === "邮箱验证码" || (this.dialogTitle === "找回密码" && this.passwordFlag === 2)) {
           params.flag = 2;
@@ -415,7 +416,7 @@
             });
             return false;
           }
-          params.place = this.email;
+          params.email = this.email;
           return true;
         }
         return false;
@@ -584,7 +585,7 @@
 
           let url;
           if (this.dialogTitle === "找回密码" || this.dialogTitle === "邮箱验证码") {
-            url = "/user/getCodeForForgetPassword";
+            url = "/mail/send";
           } else {
             url = "/user/getCodeForBind";
           }

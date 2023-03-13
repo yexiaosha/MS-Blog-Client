@@ -1,7 +1,7 @@
 export default {
-  baseURL: "http://localhost:8081",
+  baseURL: "http://localhost:8206/msblog",
   imBaseURL: "http://localhost:81",
-  webURL: "http://localhost",
+  webURL: "http://localhost:81",
 
   // baseURL: "https://poetize.cn/api",
   // imBaseURL: "https://poetize.cn/im",
