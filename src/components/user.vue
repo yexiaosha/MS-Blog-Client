@@ -533,14 +533,16 @@
         }
         let params = {
           code: this.code.trim(),
-          password: this.$common.encrypt(this.password.trim())
+          password: this.$common.encrypt(this.password.trim()),
+          email: this.email.trim(),
+          token: localStorage.getItem("userToken")
         };
         if (!this.checkParams(params)) {
           return;
         }
 
         if (this.dialogTitle === "找回密码") {
-          this.$http.post(this.$constant.baseURL + "/user/updateForForgetPassword", params, false, false)
+          this.$http.post(this.$constant.baseURL + "/user/reset", params, false, true)
             .then((res) => {
               this.clearDialog();
               this.$message({
