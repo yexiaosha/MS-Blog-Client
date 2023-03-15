@@ -4,6 +4,7 @@ import constant from "./constant";
 import qs from "qs";
 
 import store from "../store";
+import {reject} from "eslint-plugin-promise/rules/lib/promise-statics";
 
 
 axios.defaults.baseURL = constant.baseURL;

@@ -72,7 +72,7 @@
               <div>用户名：</div>
               <div>手机号：</div>
               <div>邮箱：</div>
-              <div>性别：</div>
+              <div>昵称：</div>
               <div>简介：</div>
             </div>
             <div class="user-content">
@@ -92,14 +92,10 @@
                 <div v-else><span class="changeInfo" @click="changeDialog('绑定邮箱')">绑定邮箱</span></div>
               </div>
               <div>
-                <el-radio-group v-model="currentUser.gender">
-                  <el-radio :label="0" style="margin-right: 10px">薛定谔的猫</el-radio>
-                  <el-radio :label="1" style="margin-right: 10px">男</el-radio>
-                  <el-radio :label="2">女</el-radio>
-                </el-radio-group>
+                  <el-input max-length=30 v-model="currentUser.nikeName" ></el-input>
               </div>
               <div>
-                <el-input v-model="currentUser.introduction"
+                <el-input v-model="currentUser.intro"
                           maxlength="60"
                           type="textarea"
                           show-word-limit></el-input>
@@ -225,7 +221,10 @@
         dialogTitle: "",
         codeString: "验证码",
         passwordFlag: null,
-        intervalCode: null
+        intervalCode: null,
+        nikeName: "",
+        intro: "",
+        id: ""
       }
     },
     computed: {},
@@ -260,7 +259,7 @@
         this.$http.post(this.$constant.baseURL + "/user/login", user, false, true)
           .then((res) => {
             if (!this.$common.isEmpty(res.data)) {
-              this.$store.commit("loadCurrentUser", res.data);
+              this.$store.commit("loadCurrentUser", res.data.userSimpleVo);
               localStorage.setItem("userToken", res.data.token);
               this.account = "";
               this.password = "";
@@ -344,11 +343,12 @@
 
         let user = {
           username: this.currentUser.username,
-          gender: this.currentUser.gender
+          nikeName: this.currentUser.nikeName,
+          id: this.currentUser.id
         };
 
-        if (!this.$common.isEmpty(this.currentUser.introduction)) {
-          user.introduction = this.currentUser.introduction.trim();
+        if (!this.$common.isEmpty(this.currentUser.intro)) {
+          user.intro = this.currentUser.intro.trim();
         }
 
         this.$confirm('确认保存？', '提示', {
@@ -357,7 +357,7 @@
           type: 'success',
           center: true
         }).then(() => {
-          this.$http.post(this.$constant.baseURL + "/user/updateUserInfo", user)
+          this.$http.post(this.$constant.baseURL + "/user/info/detail/update", user)
             .then((res) => {
               if (!this.$common.isEmpty(res.data)) {
                 this.$store.commit("loadCurrentUser", res.data);
